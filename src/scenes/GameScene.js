@@ -25,9 +25,9 @@ export default class GameScene extends Phaser.Scene {
 
     this.ENEMY_SPEED = 1/10000;
     this.path;
-    this.graphics;  
+    this.graphics;
   }
-  
+
 
   //  In our game, enemies will move along a predefined path so
   //  we need to create a simple path element
@@ -38,7 +38,7 @@ export default class GameScene extends Phaser.Scene {
     // this graphics element is for visualization only
 
 
-    this.map =      [[ 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0],
+    this.map =     [[ 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0],
                     [ 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 0],
                     [ 0, 0, -1, 0, 0, 0,-1,-1,-1,-1,-1, 0, 0, 0,-1, 0],
                     [ 0, 0, -1, 0, 0, 0,-1, 0, 0, 0,-1, 0, 0, 0,-1, 0],
@@ -50,7 +50,7 @@ export default class GameScene extends Phaser.Scene {
                     [ 0, 0, -1, 0, 0, 0,-1, 0, 0, 0,-1, 0, 0, 0,-1, 0],
                     [ 0, 0, -1,-1,-1,-1,-1, 0, 0, 0,-1,-1,-1,-1,-1, 0],
                     [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-    
+
 
     this.graphics = this.add.graphics();
     // draw gridlines
@@ -58,14 +58,14 @@ export default class GameScene extends Phaser.Scene {
 
   //NEW PATH FOR GAME //
     this.path = this.add.path(125, 0); // CHECK FOR CONFLICTS WITH SIZE OF GAME SCREEN
-    this.path.lineTo(125,525); //add lines for enemies to follow 
+    this.path.lineTo(125,525); //add lines for enemies to follow
     this.path.lineTo(325, 525);
     this.path.lineTo(325, 125);
     this.path.lineTo(525, 125);
     this.path.lineTo(525, 525);
     this.path.lineTo(725, 525);
     this.path.lineTo(725, -50);
-    
+
     //Make path Visibile
     this.graphics.lineStyle(3, 0x00000, 1);
     // visualize the path
@@ -83,8 +83,6 @@ export default class GameScene extends Phaser.Scene {
     });
     var spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     spaceBar.on("down", this.shoot, this);
-    
-  
 
   //Add enemies
     // Add enemy group to the game
@@ -105,12 +103,12 @@ export default class GameScene extends Phaser.Scene {
     this.waveSize = 10;
     this.spawned = 0;
 
-  
+
   //Add turrents
     this.turrets = this.add.group({ classType: Turret, runChildUpdate: true});
-    
+
     this.input.on('pointerdown', this.placeTurret);
-  
+
   //Spawn bullets
     //this.bullets = this.add.group({ defaultKey: "bullet", classType: Bullet, runChildUpdate: true});
     var bullet = this.bullets.get();
@@ -118,7 +116,7 @@ export default class GameScene extends Phaser.Scene {
     bullet.setPosition(400,300);
     bullet.setActive(true);
     bullet.setVisible(true);
-    
+
 
 
   }
@@ -127,8 +125,8 @@ export default class GameScene extends Phaser.Scene {
 
   update (time, delta) {
 
-  //Creates wave of enemies 
-    if ((time > this.nextEnemy) && (this.spawned < this.waveSize)){ 
+  //Creates wave of enemies
+    if ((time > this.nextEnemy) && (this.spawned < this.waveSize)){
       var enemy1 = this.enemies1.get();
       var enemy2 = this.enemies2.get();
       enemy2.setScale(4);
@@ -137,22 +135,22 @@ export default class GameScene extends Phaser.Scene {
         enemy1.startOnPath();
         enemy1.setActive(true);
         enemy1.setVisible(true);
-        //Spawn new enemy 
+        //Spawn new enemy
         this.nextEnemy = time + 300;
         //increment # of enemies spawned
         this.spawned+=1;
-      }         
+      }
 
       if (enemy2){
         // place the enemy at the start of the path
         enemy2.startOnPath();
         enemy2.setActive(true);
         enemy2.setVisible(true);
-        //Spawn new enemy 
+        //Spawn new enemy
         this.nextEnemy = time + 300;
         //increment # of enemies spawned
         this.spawned+=1;
-      }         
+      }
     }
 
     // bullet out of screen
@@ -183,7 +181,7 @@ export default class GameScene extends Phaser.Scene {
     bullet.setAngle(3*3.14159265/2);
     bullet.enableBody(true, 125, 575, true, true).setVelocity(velocity.x,velocity.y);
   }
-  
+
   drawGrid(graphics){
     graphics.lineStyle(1, 0x0000ff, 0.8);
     for (var i=0; i<12; i++){ // horizontal lines
@@ -195,13 +193,13 @@ export default class GameScene extends Phaser.Scene {
       graphics.lineTo(j*50, 640);
     }
     graphics.strokePath();
-  } 
+  }
 
   damageEnemy(enemy, bullet) {
     // only if both enemy and bullet are alive
     console.log(1);
     if (enemy.active === true && bullet.active === true) {
-    
+
         bullet.setActive(false);
         bullet.setVisible(false);
         enemy.receiveDamage(BULLET_DAMAGE);
@@ -233,17 +231,17 @@ export default class GameScene extends Phaser.Scene {
   getEnemy(x, y, distance) {
     var enemyUnits1 = this.enemies1.getChildren();
     var enemyUnits2 = this.enemies2.getChildren();
-    for(var i = 0; i < enemyUnits1.length; i++) {       
+    for(var i = 0; i < enemyUnits1.length; i++) {
         if(enemyUnits1[i].active && Phaser.Math.Distance.Between(x, y, enemyUnits1[i].x, enemyUnits1[i].y) <= distance)
             return enemyUnits1[i];
     }
-    for(var i = 0; i < enemyUnits2.length; i++) {       
+    for(var i = 0; i < enemyUnits2.length; i++) {
       if(enemyUnits2[i].active && Phaser.Math.Distance.Between(x, y, enemyUnits2[i].x, enemyUnits2[i].y) <= distance)
           return enemyUnits2[i];
     }
     return false;
   }
-  
+
 } // END GAME
 
 var Regular = new Phaser.Class({
@@ -268,18 +266,18 @@ var Regular = new Phaser.Class({
   //Places the enemy at the first point of our path
   startOnPath: function ()
   {
-      
+
       // set the t parameter at the start of the path
       this.follower.t = 0;
       this.hp = 100;
-      
-      // get x and y of the given t point            
+
+      // get x and y of the given t point
       this.path.getPoint(this.follower.t, this.follower.vec);
-      
-      
+
+
       // set the x and y of our enemy to the received from the previous step
       this.setPosition(this.follower.vec.x, this.follower.vec.y);
-      
+
   },
 
   receiveDamage: function(damage){
@@ -294,13 +292,13 @@ var Regular = new Phaser.Class({
   //Updates enemy position along path
   update: function (time, delta)
   {
-    
+
     // move the t point along the path, 0 is the start and 0 is the end
     this.follower.t += this.ENEMY_SPEED * delta;
 
     // get the new x and y coordinates in vec
     this.path.getPoint(this.follower.t, this.follower.vec);
-    
+
     // update enemy x and y to the newly obtained x and y
     this.setPosition(this.follower.vec.x, this.follower.vec.y);
 
@@ -311,7 +309,7 @@ var Regular = new Phaser.Class({
         this.setVisible(false);
     }
   }
- 
+
 });
 
 var Fast = new Phaser.Class({
@@ -337,7 +335,7 @@ var Fast = new Phaser.Class({
     this.follower.t = 0;
 
     // move the t point along the path, 0 is the start and 0 is the end
-    
+
     // get the new x and y coordinates in vec
     this.path.getPoint(this.follower.t, this.follower.vec);
     // update enemy x and y to the newly obtained x and y
@@ -365,7 +363,7 @@ var Turret = new Phaser.Class({
 
   Extends: Phaser.GameObjects.Image,
 
-  initialize: 
+  initialize:
 
   // Turrent constructor
   function Turret(scene){
@@ -374,7 +372,7 @@ var Turret = new Phaser.Class({
   },
 
    // we will place the turret according to the grid
-  place: function(i, j) {            
+  place: function(i, j) {
     this.y = i * 50 + 50/2;
     this.x = j * 50 + 50/2;
     this.scene.map[i][j] = 1;
@@ -388,7 +386,7 @@ var Turret = new Phaser.Class({
           this.angle = (angle + Math.PI/2) * Phaser.Math.RAD_TO_DEG;
       }
   },
-  
+
 
   update: function (time, delta){
     // time to shoot
@@ -408,7 +406,7 @@ var Bullet = new Phaser.Class({
 
   //Constructor
   function Bullet (scene){
-    
+
     //call bullet image
     Phaser.GameObjects.Image.call(this, scene, 0, 0, "bullet");
 
@@ -421,7 +419,7 @@ var Bullet = new Phaser.Class({
 
   //Firing the bullet
   fire: function(x,y,theta){
-    
+
     //make bullet visibile and non-static
     this.setActive(true);
     this.setVisible(true);
@@ -442,7 +440,7 @@ var Bullet = new Phaser.Class({
   update: function(time, delta){
 
     //update x and y postion for bullet
-  
+
 
     this.x += this.dx * (this.speed * delta);
     this.y += this.dy * (this.speed * delta);
@@ -457,4 +455,3 @@ var Bullet = new Phaser.Class({
     }
   }
 })
-
